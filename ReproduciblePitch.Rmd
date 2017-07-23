@@ -1,0 +1,48 @@
+---
+title: "Reproducible Pitch: Snow Adviser"
+author: "Mike Wehinger"
+date: "23 July 2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(xtable)
+skiData <- read.csv("NZ_Snow_Adviser/NZ_Ski_data.csv")
+```
+
+## Purpose
+
+The purpose of the app is to predict snow-fall and base (the height of snow comprising the base of a ski field) for ski fields in New Zealand. The predictions are based on which ski field(s) you are interested in and during which time of year
+
+You can see the app here: <https://mikeshout.shinyapps.io/nz_snow_adviser/>
+
+This is for the week-4 assignment in the Data Products class offered by John Hopkins University on Coursera
+
+## Predicting Snow Conditions
+
+Snow predictions are based on three variables, 
+
+* Elevation
+* Latitude
+* Month 
+
+The user slects the month and filters ski field(s) of interest by choosing difficulty and location (nearby airport). The model then returns, 
+
+* Predicted monthly snowfalls with 95% confidence interval 
+* Predicted base with 95% confidence interval 
+
+
+## Regression Model Predictor Variables
+```{r regresionPlot}
+pairs(~ avg.SnowFall + month + SumitFT + Lat, data =skiData, pch = 21, upper.panel = NULL, lower.panel = panel.smooth)
+```
+
+## Regression Model
+```{r RegressionModel, echo = TRUE}
+snowModel <- lm(avg.SnowFall ~ Lat + SumitFT + month, data = skiData)
+baseModel <- lm(Base ~ Lat + SumitFT + month, data = skiData)
+snowModel
+```
+
