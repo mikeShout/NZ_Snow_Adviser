@@ -1,4 +1,4 @@
-#
+# Shiny app to predict snow conditions in New Zealand ski resorts
 # pairs(~ avg.SnowFall + month + SumitFT + Lat, data =skiData, pch = 21, upper.panel = NULL, lower.panel = panel.smooth)
 #
 
@@ -6,9 +6,10 @@ library(shiny)
 library(dplyr)
 library(leaflet)
 
-setwd("C:/Users/Mike/OneDrive/MOOCs/DataProducts/NZ_Snow_Adviser/NZ_Snow_Adviser")
+#Get raw data for the regression model and subset it in another cvariable for the map and table 
+#setwd("C:/Users/Mike/OneDrive/MOOCs/DataProducts/NZ_Snow_Adviser/NZ_Snow_Adviser")
 skiData <- read.csv("NZ_Ski_data.csv")
-skiMapSubset <- skiMapSubset <- summarize(group_by(skiData, Resort = Resort), elevation = first(SumitFT), PercentGreen = first(Green), PercentBlue = first(Blue), PercentBlack = first(Black), skiFieldRating = first(SkiFieldRating), Lat = first(Lat), Long = first(Long), month = first(month))
+skiMapSubset <- summarize(group_by(skiData, Resort = Resort), elevation = first(SumitFT), PercentGreen = first(Green), PercentBlue = first(Blue), PercentBlack = first(Black), skiFieldRating = first(SkiFieldRating), Lat = first(Lat), Long = first(Long), month = first(month))
 
 shinyServer(function(input, output) {
   
@@ -27,7 +28,6 @@ baseModel <- lm(Base ~ Lat + SumitFT + month, data = skiData)
   })  
 
   #Predict snow and base values from UI
-
   snowPredict <- reactive({
     # collect inputs 
     latP <- mean(filteredSkiFields()$Lat)
@@ -35,7 +35,7 @@ baseModel <- lm(Base ~ Lat + SumitFT + month, data = skiData)
     monthP <- input$monthV
     
     # predict results
-    predSnow <- predict(skiModel, newdata = data.frame(Lat = latP, SumitFT=elevationP, month=monthP), interval=c("confidence"))
+    predSnow <- predict(snowModel, newdata = data.frame(Lat = latP, SumitFT=elevationP, month=monthP), interval=c("confidence"))
     predSnowCI <- predSnow[3] - predSnow[1]
     paste("Snow-fall: ", round(ifelse(predSnow[1] <= 0, 0, predSnow[1]),1)," inches (+/- ", round(predSnowCI,1), " in.*)")
   })

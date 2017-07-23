@@ -2,7 +2,10 @@ library(shiny)
 library(leaflet)
 library(dplyr)
 
-# UI will consist of three rows...
+# Load data necessary for app (including selection criteria on UI)
+skiData <- read.csv("NZ_Ski_data.csv")
+
+#Layout consisting of four rows...
 
 shinyUI(fluidPage(
 
@@ -10,15 +13,15 @@ shinyUI(fluidPage(
   h3("The likely snow conditions for New Zealand Ski Fields"),
   br(),
   
-    #Top row, two cols
+  # The top row is comprised of two cols, the left for makign selections, the right for displaying model results
   fluidRow(
     column(4,
            "Details of Visit",
            hr(),
-           selectInput("airport", "Nearest AIrport", list("Any", "Auckland", "Christchurch", "Queenstown"), selected ="", multiple = FALSE, selectize = TRUE),
+           selectInput("airport", "Nearest Airport", list("Any", "Auckland", "Christchurch", "Queenstown"), selected ="", multiple = FALSE, selectize = TRUE),
            selectInput("monthV", "Month Visiting", list("Jun", "Jul", "Aug", "Sep", "Oct"), multiple = FALSE, selectize = TRUE),
            sliderInput("sRating",
-                       "Ski Field Difficulty (0 = easy to 100 = difficult)",
+                       "Ski Field Difficulty (30 = easy to 100 = expert)",
                        min = min(skiData$SkiFieldRating),
                        max = max(skiData$SkiFieldRating),
                        value = range(skiData$SkiFieldRating),
@@ -37,17 +40,18 @@ shinyUI(fluidPage(
     )
   ),
   
+  #Show the map of ski resorts...
   fluidRow(
     column(12,
            "Map of Selected Ski Resorts",
            hr(),
            leafletOutput("skiMap"),
-           h5("Click on the marker to see the names of the ski resort"),
+           h5("Click on the marker to see ski resort names"),
            br()
     )
   ),
 
-  #The row to show the table of ski resorts...
+  #Show the table of ski resorts...
   fluidRow(
     column(12,
            "Table of Selected Ski Resorts",
@@ -57,13 +61,14 @@ shinyUI(fluidPage(
     )
   ),
   
-  #The row to show the ABout...
+  #The row showing the instructions...
   fluidRow(
     column(3,
            "About This App",
            hr(),
-           img(src="http://instagram.fsyd4-1.fna.fbcdn.net/t51.2885-15/e35/20066004_1368584033190241_5023317668350918656_n.jpg", width="100%", heght="100%")
-           
+           img(src="http://instagram.fsyd4-1.fna.fbcdn.net/t51.2885-15/e35/20066004_1368584033190241_5023317668350918656_n.jpg", width="100%", heght="100%"),
+           p("Code for this app on ", a("github", href="https://github.com/mikeShout/NZ_Snow_Adviser/")),
+           p("Mike Wehinger")
            
     ),
     
@@ -77,6 +82,7 @@ shinyUI(fluidPage(
            tags$li("Location - based on nearby airport"),
            tags$li("Difficulty - based on percent of runs that are rated green, blue, and black"),
            tags$li("Month"),
+           br(),
            p("The prediction is the result of two regression models assessing:"),
            tags$li("Elevation"),
            tags$li("Latitude"),
@@ -85,9 +91,4 @@ shinyUI(fluidPage(
     )
   )
   
-  
-    
 ))
-
-
-#<a href="https://www.instagram.com/p/BWpD1HVDWXp/" 
