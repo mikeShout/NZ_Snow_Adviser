@@ -3,8 +3,8 @@ title: NZ Snow Adviser
 account: mikeshout
 server: shinyapps.io
 appId: 198814
-bundleId: 912370
+bundleId: 912530
 url: https://mikeshout.shinyapps.io/nz_snow_adviser/
-when: 1500773292.18566
+when: 1500809685.16039
 asMultiple: FALSE
 asStatic: FALSE

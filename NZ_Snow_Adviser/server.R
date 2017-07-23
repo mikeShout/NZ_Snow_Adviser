@@ -58,7 +58,7 @@ baseModel <- lm(Base ~ Lat + SumitFT + month, data = skiData)
   
     # display map with filtered list
     output$skiMap <- renderLeaflet({
-      leaflet(filteredSkiFields()) %>% addTiles() %>% addMarkers(popup = skiMapSubset$Resort)
+      leaflet(filteredSkiFields()) %>% addTiles() %>% addMarkers(popup = filteredSkiFields()$Resort)
     })
     
     # display a table of Ski Fields with selected resorts...    
